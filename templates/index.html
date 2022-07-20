@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <title>LEARN ENGLISH</title>
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css')}}">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/font-awesome.css')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/templatemo-breezed.css')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/owl-carousel.css')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/lightbox.css')}}">
+
+    </head>
+    
+    <body>
+    
+    <!-- ***** Preloader Start ***** -->
+    <div id="preloader">
+        <div class="jumper">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>  
+    <!-- ***** Preloader End ***** -->
+    
+    
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            TIJTECH
+                        </a>
+                        <!-- ***** Logo End ***** -->       
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    <div class="main-banner header-text" id="top">
+        <div class="Modern-Slider">
+          <!-- Item -->
+          <div class="item">
+            <div class="img-fill">
+                <!-- <img src="{{ url_for('static',filename='img/slide-01.jpg')}}" alt=""> -->
+                <div class="text-content">
+                  <h1 style="color:white">TRY TO PRONOUNCE</h1> <br><br><br><br>
+                  <div class="container">
+                      <div class="row">
+                        <div class="col-sm-4">
+                            <button class="btn btn-info" style="height:130%;width:15% " onclick="prev_btn_handler()"> < </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <b><h2 id = "wordTest"  style="color:white"></h2></b>    
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="btn btn-info" style="height:130%;width:15%" onclick="next_btn_handler()"> ></button>
+                        </div>
+                       
+                      </div>
+                      <br><br><br>
+                    </div>
+                  <br>
+                  <br>
+                  <button class=" btn btn-danger" style="height:140%;width:15%" id = "startRecording">Record</button>
+                  <button class="btn btn-danger" style="height:140%;width:15%" id="stopRecording" disabled>   Stop   </button>
+                  <br>
+                  <br>
+                  <br>
+                  <a href ="#subscribe">
+                  <button class="btn btn-info" style="height:200%;width:10%" id = "checkAudio" disabled>Check</button>
+                  </a>
+                </div>
+            </div>
+          </div>
+          <!-- // Item -->
+        </div>
+    </div>
+    <!-- ***** Main Banner Area End ***** -->
+    <!-- ***** Features Big Item Start ***** -->
+    <section id="subscribe" class="section" >
+        <div class="container">
+          <div style="align-items: center;">
+            <h1 style="text-align:center; color: black;">Result</h1>
+          <div>  
+          <div class="row" style="text-align: center;">
+              <div class="col-sm-4">
+                  <b><span id="users_text"></span></b>
+              </div>
+              <div class="col-sm-4">
+                  <b>Correct: <span id="correct_incorrect"></span></b>   
+              </div>
+              <div class="col-sm-4">
+                  <b>Score: <span id="scoreField">0</span></b>
+              </div>
+              <br>  
+          </div>
+          <br><br>
+          <div class="row" style="text-align: center;">
+              <div class="col-sm-4" ></div>
+              <div class="col-sm-4">
+                  <button id="sayCorrectAudio" class="btn btn-info"><b>Correct Audio</b></button>   
+              </div>
+              <div class="col-sm-4"></div>
+          </div>
+        </div>
+    </section>
+    <!-- ***** Features Big Item End ***** -->
+<hr>
+    <!-- ***** About Area Starts ***** -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-4">
+                <h2 style="text-align: center;">WORD TO TEST</h2>
+                  <ul>
+                    {% for word in predefined_words %}
+                        <li style="text-align: center;">
+                            <div class="service-item">
+                                <h4 style="text-align: center;">{{word}}</h4>
+                            </div>
+                        </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** About Area Ends ***** -->
+    <!-- ***** Footer Start ***** -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-xs-12">
+                    <div class="left-text-content">
+                        <p>Copyright &copy; 2022 tijtech. All rights reserved.</p>
+                        
+                      
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </footer>
+    <script>
+
+        var data = JSON.parse('{{predefined_words | tojson}}')
+        let dataCounter = 0
+        wordTest.innerText = data[0]
+        let score = 0
+
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        handlerFunction(stream);
+      });
+
+      function handlerFunction(stream) {
+        rec = new MediaRecorder(stream);
+        rec.ondataavailable = (e) => {
+          audioChunks.push(e.data);
+          if (rec.state == "inactive") {
+            let blob = new Blob(audioChunks, { type: "audio/mpeg-3" });
+            sendData(blob);
+          }
+        };
+      }
+
+      function sendData(data) {
+        var form = new FormData();
+        form.append("file", data, "data.mp3");
+        form.append("title", "data.mp3");
+        //Chrome inspector shows that the post data includes a file and a title.
+        fetch("/save-record", {
+          method: "POST",
+          body: form,
+        }).then(function (response) {
+          console.log(response);
+        });
+      }
+
+      startRecording.onclick = (e) => {
+        console.log("Recording are started..");
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
+        rec.start();
+      };
+
+      stopRecording.onclick = (e) => {
+        console.log("Recording are stopped.");
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        checkAudio.disabled = false
+        rec.stop();
+      };
+
+      let result;
+      checkAudio.onclick = (e) => {
+        console.log("Checking");
+        // data = checkAudio();
+        // console.log(data)
+        fetch("/check-audio", {
+          method: "POST",
+        }).then(function (response) {
+            return response.json();
+        }).then(function(data) {
+            result = JSON.stringify(data)
+            result = JSON.parse(result)
+            updateResult(result)
+            return result
+        }).then(function (result) {
+            user_text_from_audio = result.result
+            check_with_test(user_text_from_audio)
+        });
+    };
+
+    sayCorrectAudio.onclick = (e) => {
+        // previous.disabled = true;
+        // next.disabled = true;
+        console.log('Saying the audio')
+        word_to_speak = data[dataCounter]
+        fetchUrl = `/speak-audio/${word_to_speak}`
+        fetch(fetchUrl, {
+          method: "GET",
+        }).then(function (response) {
+            return response.json();
+        });
+
+    }
+
+    function updateResult(result) {
+        user_text_from_audio = result.result
+        output = 'You said: '
+        output += user_text_from_audio
+        users_text.innerText = output
+    }
+
+    function check_with_test(api_result) {
+        word_to_check = data[dataCounter]
+        console.log('Checking')
+        if (word_to_check.toLowerCase() == api_result.toLowerCase()) {
+            console.log('Pronounced Correctly')
+            correct_incorrect.innerText = 'Yes'
+            updateScore(true)
+        } else {
+            console.log('Pronounced Incorrectly')
+            correct_incorrect.innerText = 'No'
+            updateScore(false)
+
+        }
+        console.log(word_to_check)
+        console.log(api_result)
+    }
+
+   function next_btn_handler() {
+        users_text.innerText = 'You Said: '
+        correct_incorrect.innerText = ''
+        dataCounter = (dataCounter + 1) % data.length
+        wordTest.innerText = data[dataCounter]
+    }
+
+    function prev_btn_handler() {
+        users_text.innerText = 'You Said: '
+        correct_incorrect.innerText = ''
+
+        dataCounter = (dataCounter - 1)
+        if (dataCounter < 0) {
+            dataCounter = data.length - 1
+        }
+        wordTest.innerText = data[dataCounter]
+    }
+
+    function updateScore(true_false) {
+        if (true_false == true) {
+            score += 1
+            scoreField.innerText = score
+
+        } else {
+            score -= 1
+            scoreField.innerText = score
+        }
+    }
+
+    </script>
+    
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static',filename='js/jquery-2.1.0.min.js')}}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static',filename='js/popper.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js')}}"></script>
+
+    <!-- Plugins -->
+    <script src="{{ url_for('static',filename='js/owl-carousel.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/scrollreveal.min.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/waypoints.min.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/jquery.counterup.min.js')}}"></script>
+    <script src="{{ url_for('static',filename='js/imgfix.min.js')}}"></script> 
+    <script src="{{ url_for('static',filename='js/slick.js')}}"></script> 
+    <script src="{{ url_for('static',filename='js/lightbox.js')}}"></script> 
+    <script src="{{ url_for('static',filename='js/isotope.js')}}"></script> 
+    
+    <!-- Global Init -->
+    <script src="{{ url_for('static',filename='js/custom.js')}}"></script>
+
+    <script>
+
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function(){
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("."+selectedClass).fadeOut();
+            setTimeout(function() {
+              $("."+selectedClass).fadeIn();
+              $("#portfolio").fadeTo(50, 1);
+            }, 500);
+                
+            });
+        });
+
+    </script>
+
+  </body>
+</html>
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~old~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study English</title>
+  </head>
+  <body>
+    <style>
+      .center {
+        padding: 20px;
+        border: 5px solid #362ff4;
+        text-align: center;
+      }
+
+      .sideBar {
+        padding: 50px;
+        position: absolute;
+        z-index: 1;
+      }
+
+    </style>
+
+    <main>
+
+        <div class="sideBar">
+            <h3>
+                Words To Test:
+            </h3>
+            <ul>
+                {% for word in predefined_words %}
+                    <li>{{word}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="center">
+            <h1>Test English Pronunciation</h1>
+            <div>
+              <b id="wordTest"></b>
+            </div>
+      
+            <div>
+              <p>
+                <button id="previous" onclick="prev_btn_handler()">Previous</button>
+                <button id="startRecording">Start recording</button>
+                <button id="stopRecording" disabled>Stop recording</button>
+                <button id="next" onclick="next_btn_handler()">Next</button>
+              </p>
+            </div>
+      
+            <div>
+              <p>
+                <button id="checkAudio" disabled>Check</button>
+              </p>
+              
+              <div id="users_text">
+                  You Said:
+              </div>
+      
+              <div>
+                  Correct: <span id="correct_incorrect"></span>
+                  <br />
+      
+              </div>
+            </div>
+      
+            <div>
+              Score: <span id="scoreField">0</span>
+              <br />
+            </div>
+      
+            <div>
+              <button id="sayCorrectAudio">Correct Audio</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        var data = JSON.parse('{{predefined_words | tojson}}')
+        let dataCounter = 0
+        wordTest.innerText = data[0]
+        let score = 0
+
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        handlerFunction(stream);
+      });
+
+      function handlerFunction(stream) {
+        rec = new MediaRecorder(stream);
+        rec.ondataavailable = (e) => {
+          audioChunks.push(e.data);
+          if (rec.state == "inactive") {
+            let blob = new Blob(audioChunks, { type: "audio/mpeg-3" });
+            sendData(blob);
+          }
+        };
+      }
+
+      function sendData(data) {
+        var form = new FormData();
+        form.append("file", data, "data.mp3");
+        form.append("title", "data.mp3");
+        //Chrome inspector shows that the post data includes a file and a title.
+        fetch("/save-record", {
+          method: "POST",
+          body: form,
+        }).then(function (response) {
+          console.log(response);
+        });
+      }
+
+      startRecording.onclick = (e) => {
+        console.log("Recording are started..");
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
+        rec.start();
+      };
+
+      stopRecording.onclick = (e) => {
+        console.log("Recording are stopped.");
+        startRecording.disabled = false;
+        stopRecording.disabled = true;
+        checkAudio.disabled = false
+        rec.stop();
+      };
+
+      let result;
+      checkAudio.onclick = (e) => {
+        console.log("Checking");
+        // data = checkAudio();
+        // console.log(data)
+        fetch("/check-audio", {
+          method: "POST",
+        }).then(function (response) {
+            return response.json();
+        }).then(function(data) {
+            result = JSON.stringify(data)
+            result = JSON.parse(result)
+            updateResult(result)
+            return result
+        }).then(function (result) {
+            user_text_from_audio = result.result
+            check_with_test(user_text_from_audio)
+        });
+    };
+
+    sayCorrectAudio.onclick = (e) => {
+        // previous.disabled = true;
+        // next.disabled = true;
+        console.log('Saying the audio')
+        word_to_speak = data[dataCounter]
+        fetchUrl = `/speak-audio/${word_to_speak}`
+        fetch(fetchUrl, {
+          method: "GET",
+        }).then(function (response) {
+            return response.json();
+        });
+
+    }
+
+    function updateResult(result) {
+        user_text_from_audio = result.result
+        output = 'You Said: '
+        output += user_text_from_audio
+        users_text.innerText = output
+    }
+
+    function check_with_test(api_result) {
+        word_to_check = data[dataCounter]
+        console.log('Checking')
+        if (word_to_check.toLowerCase() == api_result.toLowerCase()) {
+            console.log('Pronounced Correctly')
+            correct_incorrect.innerText = 'Yes'
+            updateScore(true)
+        } else {
+            console.log('Pronounced Incorrectly')
+            correct_incorrect.innerText = 'No'
+            updateScore(false)
+
+        }
+        console.log(word_to_check)
+        console.log(api_result)
+    }
+
+   function next_btn_handler() {
+        users_text.innerText = 'You Said: '
+        correct_incorrect.innerText = ''
+        dataCounter = (dataCounter + 1) % data.length
+        wordTest.innerText = data[dataCounter]
+    }
+
+    function prev_btn_handler() {
+        users_text.innerText = 'You Said: '
+        correct_incorrect.innerText = ''
+
+        dataCounter = (dataCounter - 1)
+        if (dataCounter < 0) {
+            dataCounter = data.length - 1
+        }
+        wordTest.innerText = data[dataCounter]
+    }
+
+    function updateScore(true_false) {
+        if (true_false == true) {
+            score += 1
+            scoreField.innerText = score
+
+        } else {
+            score -= 1
+            scoreField.innerText = score
+        }
+    }
+
+    </script>
+  </body>
+</html> -->
